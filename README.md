@@ -115,22 +115,6 @@ It will call the backend endpoints and log pass/fail results.
 ---
 
 ## 🛠 Tech Stack
-- **Frontend:** React 19, Tailwind CSS, shadcn/ui, lucide-react, craco
+- **Frontend:** React, Tailwind CSS, shadcn/ui, lucide-react, craco
 - **Backend:** FastAPI, Uvicorn, (optional) MongoDB via Motor
 - **Tooling:** Yarn, PostCSS, ESLint
-
----
-
-## 📦 Production Build
-Frontend:
-```bash
-cd frontend
-yarn build
-# Deploy the 'build/' folder to Netlify, Vercel, or any static host
-```
-Backend:
-```bash
-cd backend
-# example: uvicorn server:app --host 0.0.0.0 --port 8080
-# Use a process manager (e.g., systemd, pm2) or a PaaS (Render, Fly.io, Railway)
-```
