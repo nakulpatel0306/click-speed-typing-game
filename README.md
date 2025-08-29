@@ -134,24 +134,3 @@ cd backend
 # example: uvicorn server:app --host 0.0.0.0 --port 8080
 # Use a process manager (e.g., systemd, pm2) or a PaaS (Render, Fly.io, Railway)
 ```
-
----
-
-## 📝 Notes
-- Keep Node at **18/20** for best compatibility with CRA + craco.
-- If you change the backend port, update `REACT_APP_BACKEND_URL` in `frontend/.env`.
-- No Emergent or PostHog dependencies remain; the project is clean.
-
-
----
-
-## 📤 Publish to GitHub
-```bash
-# from the project root
-git init
-git add .
-git commit -m "Initial commit: Click - A Typing Speed Game"
-git branch -M main
-git remote add origin https://github.com/<your-username>/click-typing-speed-game.git
-git push -u origin main
-```
