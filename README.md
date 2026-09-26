@@ -1,120 +1,65 @@
 # Click - A Typing Speed Game
 
-An AI‑assisted typing practice app with a **FastAPI** backend and a **React + Tailwind** frontend. 
-Type a generated passage, track **WPM, accuracy, mistakes, and time**, and save results for basic stats.
+A typing practice app with a FastAPI backend and a React frontend. Type a generated passage and track WPM, accuracy, mistakes and time as you go.
 
----
+## At a Glance
 
-## ✨ Features
-- Difficulty‑based practice text (easy / medium / hard)
-- Live **WPM** and **accuracy** as you type
-- Visual progress and per‑character feedback (correct / incorrect / current)
-- Save results and view simple aggregate stats
-- Modern, responsive UI (Tailwind + shadcn/ui components)
+- **Frontend:** React, Tailwind CSS, shadcn/ui, craco
+- **Backend:** FastAPI, Uvicorn, optional MongoDB (Motor)
+- **State:** Complete
 
----
+## Features
 
-## 🗂 Project Structure
+- Practice text at easy, medium or hard difficulty
+- Live WPM and accuracy while typing
+- Per-character feedback for correct, incorrect and current letters
+- Saves each session and shows aggregate stats
+- Falls back to in-memory storage when no database is set
+
+## Project Structure
+
 ```
 .
-├── backend/                        # FastAPI service
-│   ├── server.py                   # API (practice text, results, stats)
-│   ├── requirements.txt
-│   └── .env                        # (optional) DB_URL, DB_NAME, etc.
-├── frontend/                       # React app (CRA + craco + Tailwind)
-│   ├── public/
-│   │   └── index.html              # <title> Click - A Typing Speed Game
+├── backend/
+│   ├── server.py            # API for practice text, results and stats
+│   └── requirements.txt
+├── frontend/
 │   ├── src/
-│   │   ├── App.js                  # Main UI and typing logic
-│   │   ├── App.css                 # App styles
-│   │   ├── index.css               # Tailwind base + tokens
-│   │   └── components/ui/*         # shadcn/ui components
-│   ├── package.json
+│   │   ├── App.js           # Main UI and typing logic
+│   │   └── components/ui/   # shadcn/ui components
 │   ├── tailwind.config.js
-│   ├── postcss.config.js
-│   ├── craco.config.js
-│   └── .env                        # REACT_APP_BACKEND_URL=http://localhost:5000
-├── test_result.md                  # Testing protocol log (optional)
-└── backend_test.py                 # Simple API tester (optional)
+│   └── craco.config.js
+└── backend_test.py          # Hits each endpoint and logs pass or fail
 ```
 
----
+## Running Locally
 
-## 🚀 Getting Started
+1. Start the backend (runs on port 5000):
+   ```bash
+   cd backend
+   python3 -m venv venv && source venv/bin/activate   # Windows: venv\Scripts\activate
+   pip install -r requirements.txt
+   python server.py
+   ```
+2. Create `frontend/.env` so the frontend can find the API:
+   ```
+   REACT_APP_BACKEND_URL=http://localhost:5000
+   ```
+3. In a second terminal, start the frontend (Node 18 or 20) and open `http://localhost:3000`:
+   ```bash
+   cd frontend
+   yarn install
+   yarn start
+   ```
 
-### 1) Backend (FastAPI)
-```bash
-cd backend
-python3 -m venv venv
-source venv/bin/activate         # Windows: venv\Scripts\activate
-pip install -r requirements.txt
+Optional backend env vars are `DB_URL` (MongoDB connection string) and `DB_NAME` (defaults to `typing_racer`).
 
-# start the API (default PORT=5000 to match the frontend)
-export PORT=5000                 # Windows PowerShell: setx PORT 5000 (then restart shell)
-uvicorn server:app --host 0.0.0.0 --port $PORT
-# or: python server.py
-```
-**Environment variables (optional):**
-- `DB_URL` — MongoDB connection string (falls back to local memory if not set)
-- `DB_NAME` — MongoDB database name (default: `typing_racer`)
+## API
 
-### 2) Frontend (React + Tailwind)
-```bash
-cd frontend
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/practice-text?difficulty=easy\|medium\|hard` | Returns a passage for the chosen difficulty |
+| `POST` | `/api/results` | Saves one session (`wpm`, `accuracy`, `time_taken`, `mistakes`, and more) |
+| `GET` | `/api/stats` | Total sessions, average WPM and accuracy, last 10 results |
 
-# Use Node 18 or 20 (recommended). If you have Homebrew:
-#   brew install node@20 && brew link --overwrite --force node@20
-# Or use Volta:
-#   curl https://get.volta.sh | bash && volta install node@20 yarn@1.22.22
-
-yarn install
-yarn start
-```
-The app runs at **http://localhost:3000** and points to the backend in `frontend/.env`:
-```
-REACT_APP_BACKEND_URL=http://localhost:5000
-```
-
----
-
-## 🔌 API Endpoints (summary)
-> Base URL: `http://localhost:5000` (configurable via env)
-
-- **GET `/api/practice-text?difficulty=easy|medium|hard`**  
-  Returns a practice text string and the resolved difficulty.
-
-- **POST `/api/results`**  
-  Body (JSON):
-  ```json
-  {
-    "user_id": "optional-id",
-    "wpm": 85,
-    "accuracy": 96,
-    "time_taken": 42.1,
-    "characters_typed": 240,
-    "mistakes": 5,
-    "text_length": 240
-  }
-  ```
-  Stores a single typing session result.
-
-- **GET `/api/stats`**  
-  Returns basic aggregated stats (total sessions, average WPM/accuracy, recent 10 results).
-
-*(Endpoint names are inferred from the frontend usage and backend structure.)*
-
----
-
-## 🧪 Local Testing (optional)
-A simple tester is included:
-```bash
-python backend_test.py
-```
-It will call the backend endpoints and log pass/fail results.
-
----
-
-## 🛠 Tech Stack
-- **Frontend:** React, Tailwind CSS, shadcn/ui, lucide-react, craco
-- **Backend:** FastAPI, Uvicorn, (optional) MongoDB via Motor
-- **Tooling:** Yarn, PostCSS, ESLint
+Run `python backend_test.py` with the backend up to check every endpoint.
