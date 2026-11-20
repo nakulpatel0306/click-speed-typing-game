@@ -65,3 +65,7 @@ Optional backend env vars are `MONGO_URL` (defaults to `mongodb://localhost:2701
 | `GET` | `/api/stats?user_id=` | Total sessions, average WPM and accuracy, recent results (optionally for one `user_id`) |
 
 With the backend and MongoDB up, run `python backend_test.py` from the repo root (needs `requests`) to check every endpoint.
+
+## License
+
+MIT, see [LICENSE](LICENSE).
