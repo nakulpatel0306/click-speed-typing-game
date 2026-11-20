@@ -1,20 +1,21 @@
 # Click - A Typing Speed Game
 
-A typing practice app with a FastAPI backend and a React frontend. Type a generated passage and track WPM, accuracy, mistakes and time as you go.
+A typing practice app with a FastAPI backend and a React frontend. Pick a difficulty, type the passage it serves, and watch WPM, accuracy, mistakes and time update as you go.
 
 ## At a Glance
 
 - **Frontend:** React, Tailwind CSS, shadcn/ui, craco
-- **Backend:** FastAPI, Uvicorn, optional MongoDB (Motor)
+- **Backend:** FastAPI, Uvicorn, MongoDB (Motor)
 - **State:** Complete
 
 ## Features
 
-- Practice text at easy, medium or hard difficulty
-- Live WPM and accuracy while typing
-- Per-character feedback for correct, incorrect and current letters
-- Saves each session and shows aggregate stats
-- Falls back to in-memory storage when no database is set
+- Practice passages at easy, medium or hard difficulty, with a button for a new one
+- Timer starts on the first keystroke; WPM, accuracy and mistakes update live
+- Per-character feedback for correct, incorrect and current letters, plus a progress bar
+- Results card when you finish, with Try Again and New Text
+- API stores finished sessions in MongoDB and returns aggregate stats
+- Falls back to a built-in passage if the backend is unreachable
 
 ## Project Structure
 
@@ -23,6 +24,7 @@ A typing practice app with a FastAPI backend and a React frontend. Type a genera
 ├── backend/
 │   ├── server.py            # API for practice text, results and stats
 │   └── requirements.txt
+├── tests/                   # Empty package placeholder
 ├── frontend/
 │   ├── src/
 │   │   ├── App.js           # Main UI and typing logic
@@ -34,7 +36,7 @@ A typing practice app with a FastAPI backend and a React frontend. Type a genera
 
 ## Running Locally
 
-1. Start the backend (runs on port 5000):
+1. Start MongoDB locally (the backend expects `mongodb://localhost:27017`), then start the backend on port 5000:
    ```bash
    cd backend
    python3 -m venv venv && source venv/bin/activate   # Windows: venv\Scripts\activate
@@ -52,14 +54,14 @@ A typing practice app with a FastAPI backend and a React frontend. Type a genera
    yarn start
    ```
 
-Optional backend env vars are `DB_URL` (MongoDB connection string) and `DB_NAME` (defaults to `typing_racer`).
+Optional backend env vars are `MONGO_URL` (defaults to `mongodb://localhost:27017`), `DB_NAME` (defaults to `typing_racer`), `HOST` and `PORT`. Practice text works without MongoDB; saving results and stats need it.
 
 ## API
 
 | Method | Endpoint | Description |
 |---|---|---|
 | `GET` | `/api/practice-text?difficulty=easy\|medium\|hard` | Returns a passage for the chosen difficulty |
-| `POST` | `/api/results` | Saves one session (`wpm`, `accuracy`, `time_taken`, `mistakes`, and more) |
-| `GET` | `/api/stats` | Total sessions, average WPM and accuracy, last 10 results |
+| `POST` | `/api/results` | Saves one session (`wpm`, `accuracy`, `time_taken`, `characters_typed`, `mistakes`, `text_length`, `timestamp`, optional `user_id`) |
+| `GET` | `/api/stats?user_id=` | Total sessions, average WPM and accuracy, recent results (optionally for one `user_id`) |
 
-Run `python backend_test.py` with the backend up to check every endpoint.
+With the backend and MongoDB up, run `python backend_test.py` from the repo root (needs `requests`) to check every endpoint.
