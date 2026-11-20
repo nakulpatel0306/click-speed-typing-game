@@ -35,7 +35,7 @@ class TypingResult(BaseModel):
     characters_typed: int
     mistakes: int
     text_length: int
-    timestamp: datetime
+    timestamp: Optional[datetime] = None  # set by the server on save
 
 class PracticeText(BaseModel):
     text: str
@@ -68,7 +68,7 @@ PRACTICE_TEXTS = {
 
 @app.get("/")
 async def root():
-    return {"message": "AI-Powered Typing Racer API"}
+    return {"message": "Click typing game API"}
 
 @app.get("/api/practice-text")
 async def get_practice_text(difficulty: str = "medium"):
